@@ -5,8 +5,7 @@ Uma releitura moderna e funcional de certificados de desenvolvimento web: mais d
 🚀 Demonstração Online
 
 🔗 Acesse a aplicação no ar: Clique aqui para visualizar
-
-(Substitua SEU-USUARIO pelo seu nome de usuário no GitHub)
+🔗 **Link do Projeto:** [Ver Certificado Online](https://josecelsodelucas2-lgtm.github.io/portfolio-certificado/)
 
 📸 Visão Geral
 
