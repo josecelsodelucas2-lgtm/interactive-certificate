@@ -1,1 +1,847 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Certificados Interativos & Portfólio</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- QRCode.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
+    
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #050814;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(20, 45, 95, 0.45) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(13, 80, 160, 0.25) 0px, transparent 50%),
+        radial-gradient(at 50% 50%, rgba(8, 20, 48, 0.6) 0px, transparent 70%);
+      min-height: 100vh;
+      color: #e2e8f0;
+    }
 
+    .font-heading {
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .glass-panel {
+      background: rgba(12, 22, 45, 0.72);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(56, 189, 248, 0.15);
+    }
+
+    .glass-panel-glow {
+      box-shadow: 0 0 45px -10px rgba(14, 165, 233, 0.18), inset 0 0 20px rgba(56, 189, 248, 0.05);
+    }
+
+    .cert-seal {
+      background: linear-gradient(180deg, #1e3a8a 0%, #0f172a 100%);
+      border-right: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .radial-progress {
+      transform: rotate(-90deg);
+    }
+
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .glass-panel {
+        background: #ffffff !important;
+        border: 2px solid #2563eb !important;
+        box-shadow: none !important;
+        color: #000 !important;
+      }
+      .cert-seal {
+        background: #1e3a8a !important;
+        color: #ffffff !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body class="flex flex-col items-center justify-between p-3 sm:p-6 lg:p-8 selection:bg-blue-500 selection:text-white">
+
+  <!-- TOP HEADER / NAV BAR -->
+  <header class="w-full max-w-7xl flex flex-wrap items-center justify-between gap-4 mb-6 no-print">
+    <div class="flex items-center gap-3">
+      <div class="p-2.5 rounded-xl bg-blue-600/20 border border-blue-500/30 text-blue-400 shadow-lg shadow-blue-500/10">
+        <i data-lucide="award" class="w-7 h-7"></i>
+      </div>
+      <div>
+        <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+          Hub de Certificações & Portfólio
+          <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30">v2.0 Multi-Certificado</span>
+        </h1>
+        <p class="text-xs text-slate-400">Credenciais verificáveis e projetos validados</p>
+      </div>
+    </div>
+
+    <!-- CERTIFICATE SELECTOR TABS & ACTION BUTTONS -->
+    <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+      <!-- Dropdown or Tab Selector -->
+      <div class="flex items-center bg-slate-900/80 p-1 rounded-xl border border-slate-800">
+        <label for="certSelect" class="text-xs font-semibold text-slate-400 px-2 flex items-center gap-1.5">
+          <i data-lucide="layers" class="w-3.5 h-3.5 text-blue-400"></i> Selecionar:
+        </label>
+        <select id="certSelect" onchange="switchCertificate(this.value)" class="bg-slate-800 text-white text-xs font-medium rounded-lg px-2.5 py-1.5 border border-slate-700 focus:outline-none focus:border-blue-500 transition">
+          <!-- Populated by JavaScript -->
+        </select>
+      </div>
+
+      <button onclick="openModal()" class="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center gap-1.5 transition shadow-lg shadow-blue-600/25 active:scale-95">
+        <i data-lucide="edit-3" class="w-3.5 h-3.5"></i> Editar
+      </button>
+
+      <button onclick="openNewCertModal()" class="px-3 py-1.5 rounded-xl bg-emerald-600/80 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-1.5 transition shadow-lg shadow-emerald-600/20 active:scale-95">
+        <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> Novo Certificado
+      </button>
+
+      <button onclick="window.print()" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-1.5 border border-slate-700 transition active:scale-95">
+        <i data-lucide="printer" class="w-3.5 h-3.5"></i> Imprimir / PDF
+      </button>
+    </div>
+  </header>
+
+  <!-- TITLE SLOGAN SECTION (IDENTICAL TO PHOTO) -->
+  <section class="text-center mb-6 max-w-4xl px-4 no-print">
+    <h2 class="font-heading text-2xl sm:text-4xl lg:text-5xl font-extrabold tracking-wide uppercase text-white">
+      A NOVA GERAÇÃO <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">DE CERTIFICADOS</span>
+    </h2>
+    <p class="text-xs sm:text-sm text-slate-300 mt-2 font-medium tracking-wide">
+      Mais do que horas de curso: comprovando competências, projetos e impacto real.
+    </p>
+  </section>
+
+  <!-- MAIN DASHBOARD WRAPPER: 3 COLS (LEFT CARDS, CENTER CERTIFICATE, RIGHT CARDS) -->
+  <main class="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch mb-8">
+
+    <!-- LEFT SIDEBAR: 3 INTERACTIVE FEATURE CARDS -->
+    <div class="lg:col-span-2 flex flex-col gap-3.5 order-2 lg:order-1 no-print">
+      
+      <!-- Card 1 -->
+      <div class="glass-panel p-4 rounded-2xl flex flex-col items-center text-center hover:border-blue-400/50 transition group">
+        <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-400/20 flex items-center justify-center text-blue-400 mb-2.5 group-hover:scale-110 transition">
+          <i data-lucide="graduation-cap" class="w-6 h-6"></i>
+        </div>
+        <h4 class="text-xs font-bold text-white tracking-wide uppercase">Competências Reais</h4>
+        <p class="text-[11px] text-slate-400 mt-1 leading-snug">Mostra o que você aprendeu na prática com código real.</p>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="glass-panel p-4 rounded-2xl flex flex-col items-center text-center hover:border-blue-400/50 transition group">
+        <div class="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-400/20 flex items-center justify-center text-indigo-400 mb-2.5 group-hover:scale-110 transition">
+          <i data-lucide="folder-code" class="w-6 h-6"></i>
+        </div>
+        <h4 class="text-xs font-bold text-white tracking-wide uppercase">Projetos Autênticos</h4>
+        <p class="text-[11px] text-slate-400 mt-1 leading-snug">Evidências de projetos que você construiu e entregou.</p>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="glass-panel p-4 rounded-2xl flex flex-col items-center text-center hover:border-blue-400/50 transition group">
+        <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-400/20 flex items-center justify-center text-cyan-400 mb-2.5 group-hover:scale-110 transition">
+          <i data-lucide="trending-up" class="w-6 h-6"></i>
+        </div>
+        <h4 class="text-xs font-bold text-white tracking-wide uppercase">Nível de Domínio</h4>
+        <p class="text-[11px] text-slate-400 mt-1 leading-snug">Seu progresso demonstrado de forma clara e transparente.</p>
+      </div>
+
+    </div>
+
+    <!-- CENTER CERTIFICATE (MAIN DISPLAY) -->
+    <div class="lg:col-span-8 order-1 lg:order-2">
+      <div class="glass-panel glass-panel-glow rounded-3xl overflow-hidden shadow-2xl relative flex flex-col md:flex-row border border-blue-400/30">
+        
+        <!-- VERTICAL LEFT SEAL / BADGE STRIP -->
+        <div class="cert-seal w-full md:w-36 lg:w-40 p-4 flex flex-col items-center justify-between text-center relative border-b md:border-b-0 md:border-r border-blue-500/20">
+          
+          <!-- Top Shield Badge -->
+          <div class="flex flex-col items-center pt-2">
+            <div class="relative w-16 h-16 flex items-center justify-center mb-1">
+              <svg viewBox="0 0 100 100" class="w-full h-full text-blue-500 fill-current opacity-25 absolute">
+                <polygon points="50,5 90,20 90,65 50,95 10,65 10,20" />
+              </svg>
+              <svg viewBox="0 0 100 100" class="w-full h-full stroke-blue-400 fill-none stroke-[3] absolute">
+                <polygon points="50,7 88,21 88,63 50,92 12,63 12,21" />
+              </svg>
+              <div class="relative flex flex-col items-center">
+                <i data-lucide="award" class="w-7 h-7 text-white"></i>
+                <i data-lucide="sparkles" class="w-3 h-3 text-cyan-300 -mt-1"></i>
+              </div>
+            </div>
+            <span class="text-[10px] font-extrabold uppercase tracking-widest text-blue-300">CERTIFICADO</span>
+            <span class="text-[9px] font-medium uppercase tracking-wider text-slate-400">VERIFICADO</span>
+          </div>
+
+          <!-- Middle Status / Shield Icon -->
+          <div class="my-3 hidden md:flex items-center justify-center">
+            <div class="p-2 rounded-full bg-blue-500/20 border border-blue-400/40 text-blue-400">
+              <i data-lucide="shield-check" class="w-5 h-5"></i>
+            </div>
+          </div>
+
+          <!-- Bottom QR Code Section -->
+          <div class="flex flex-col items-center pb-2">
+            <div class="bg-white p-2 rounded-xl shadow-md border border-white/20 mb-1.5" id="qrcode-container">
+              <div id="qrcode"></div>
+            </div>
+            <span class="text-[9px] font-semibold text-slate-300 uppercase tracking-tight text-center leading-tight">
+              Verifique a<br>autenticidade
+            </span>
+            <div class="flex items-center gap-1 mt-1 text-[9px] font-bold text-cyan-400 bg-cyan-950/40 px-2 py-0.5 rounded-full border border-cyan-500/20">
+              <i data-lucide="check-circle" class="w-2.5 h-2.5"></i>
+              <span>VALIDADO</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- MAIN CERTIFICATE BODY -->
+        <div class="flex-1 p-5 sm:p-7 flex flex-col justify-between bg-slate-900/60">
+          
+          <!-- Header Area -->
+          <div class="flex items-start justify-between gap-4 pb-4 border-b border-slate-800">
+            <div>
+              <div class="flex items-center gap-2 text-xs font-semibold text-blue-400 uppercase tracking-widest">
+                <i data-lucide="file-check-2" class="w-4 h-4"></i>
+                <span id="disp-category">CERTIFICADO DE CONCLUSÃO</span>
+              </div>
+              <p class="text-[11px] text-slate-400 mt-0.5 font-medium uppercase tracking-wider">CURSO / FORMAÇÃO</p>
+              <h3 id="disp-title" class="text-xl sm:text-2xl font-extrabold text-white mt-0.5 tracking-tight font-heading">
+                <!-- Title Injected -->
+              </h3>
+              <p id="disp-desc" class="text-xs text-slate-300 mt-1 max-w-xl leading-relaxed">
+                <!-- Desc Injected -->
+              </p>
+            </div>
+
+            <!-- Digital Verified Badge Stamp (Circle) -->
+            <div class="flex-shrink-0 flex flex-col items-center justify-center w-20 h-20 rounded-full border-2 border-dashed border-blue-400/60 bg-blue-950/30 text-center p-1 shadow-inner relative group cursor-pointer" onclick="verifyCertificate()">
+              <i data-lucide="shield-check" class="w-4 h-4 text-cyan-400"></i>
+              <span class="text-[8px] font-extrabold text-blue-300 uppercase tracking-tighter mt-0.5">CERTIFICADO</span>
+              <span class="text-[7px] font-bold text-white uppercase tracking-tight">DIGITAL</span>
+              <span class="text-[7px] font-semibold text-cyan-400 uppercase">VERIFICADO</span>
+            </div>
+          </div>
+
+          <!-- Competências Desenvolvidas (Tech Badges) -->
+          <div class="my-4">
+            <h4 class="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5 mb-2.5">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5 text-blue-400"></i>
+              Competências Desenvolvidas
+            </h4>
+            <div id="disp-skills" class="flex flex-wrap gap-2">
+              <!-- Skill pills injected -->
+            </div>
+          </div>
+
+          <!-- Middle Split: Projetos Desenvolvidos & Métricas de Proficiência -->
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-4 py-3 border-y border-slate-800/80">
+            
+            <!-- Projetos Desenvolvidos (Cols 7) -->
+            <div class="md:col-span-7 pr-0 md:pr-2">
+              <h4 class="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5 mb-2">
+                <i data-lucide="folder-git-2" class="w-3.5 h-3.5 text-blue-400"></i>
+                Projetos Desenvolvidos
+              </h4>
+              <div id="disp-projects" class="space-y-2">
+                <!-- Projects Injected -->
+              </div>
+            </div>
+
+            <!-- Nível de Proficiência & Metadados (Cols 5) -->
+            <div class="md:col-span-5 flex flex-col justify-between pl-0 md:pl-2 border-t md:border-t-0 md:border-l border-slate-800/80 pt-3 md:pt-0">
+              
+              <!-- Nível de Proficiência -->
+              <div>
+                <h4 class="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5 mb-2">
+                  <i data-lucide="pie-chart" class="w-3.5 h-3.5 text-blue-400"></i>
+                  Nível de Proficiência
+                </h4>
+                <div class="flex items-center gap-3">
+                  <!-- Circular Gauge -->
+                  <div class="relative w-16 h-16 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-full h-full radial-progress" viewBox="0 0 36 36">
+                      <path
+                        class="text-slate-800 stroke-current"
+                        stroke-width="3.5"
+                        fill="none"
+                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      />
+                      <path
+                        id="disp-circle"
+                        class="text-blue-500 stroke-current transition-all duration-700"
+                        stroke-dasharray="85, 100"
+                        stroke-linecap="round"
+                        stroke-width="3.5"
+                        fill="none"
+                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      />
+                    </svg>
+                    <span id="disp-percent" class="absolute text-xs font-extrabold text-white">85%</span>
+                  </div>
+                  <!-- Legend -->
+                  <div class="text-[10px] space-y-1">
+                    <div class="flex items-center gap-1.5 text-slate-400">
+                      <span class="w-2 h-2 rounded-full bg-slate-600"></span> Intermediário
+                    </div>
+                    <div class="flex items-center gap-1.5 text-blue-400 font-semibold">
+                      <span class="w-2 h-2 rounded-full bg-blue-500"></span> Avançado
+                    </div>
+                    <div class="flex items-center gap-1.5 text-cyan-400 font-semibold">
+                      <span class="w-2 h-2 rounded-full bg-cyan-400"></span> Especialista
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Carga Horária & Conclusão -->
+              <div class="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-slate-800/80">
+                <div>
+                  <span class="text-[9px] font-semibold text-slate-400 uppercase flex items-center gap-1">
+                    <i data-lucide="clock" class="w-2.5 h-2.5 text-blue-400"></i> Carga Horária
+                  </span>
+                  <p id="disp-hours" class="text-base font-extrabold text-white">80h</p>
+                </div>
+                <div>
+                  <span class="text-[9px] font-semibold text-slate-400 uppercase flex items-center gap-1">
+                    <i data-lucide="calendar" class="w-2.5 h-2.5 text-blue-400"></i> Concluído em
+                  </span>
+                  <p id="disp-date" class="text-xs font-bold text-slate-200 mt-0.5">15/10/2026</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Bottom: Evidências e Verificação Links -->
+          <div class="mt-4 pt-2">
+            <h4 class="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5 mb-2">
+              <i data-lucide="shield-check" class="w-3.5 h-3.5 text-blue-400"></i>
+              Evidências e Verificação
+            </h4>
+            <div id="disp-evidence" class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <!-- Evidence buttons injected -->
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT SIDEBAR: 3 SUPPORTING CARDS -->
+    <div class="lg:col-span-2 flex flex-col gap-3.5 order-3 no-print">
+      
+      <!-- Card 4 -->
+      <div class="glass-panel p-4 rounded-2xl flex flex-col items-center text-center hover:border-blue-400/50 transition group">
+        <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-400/20 flex items-center justify-center text-blue-400 mb-2.5 group-hover:scale-110 transition">
+          <i data-lucide="shield" class="w-6 h-6"></i>
+        </div>
+        <h4 class="text-xs font-bold text-white tracking-wide uppercase">Verificação Segura</h4>
+        <p class="text-[11px] text-slate-400 mt-1 leading-snug">Certificado protegido com validação digital e QR Code oficial.</p>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="glass-panel p-4 rounded-2xl flex flex-col items-center text-center hover:border-blue-400/50 transition group">
+        <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-400/20 flex items-center justify-center text-cyan-400 mb-2.5 group-hover:scale-110 transition">
+          <i data-lucide="share-2" class="w-6 h-6"></i>
+        </div>
+        <h4 class="text-xs font-bold text-white tracking-wide uppercase">Integração Total</h4>
+        <p class="text-[11px] text-slate-400 mt-1 leading-snug">Conecte seus projetos diretamente com seu LinkedIn e GitHub.</p>
+      </div>
+
+      <!-- Card 6 -->
+      <div class="glass-panel p-4 rounded-2xl flex flex-col items-center text-center hover:border-blue-400/50 transition group">
+        <div class="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-400/20 flex items-center justify-center text-indigo-400 mb-2.5 group-hover:scale-110 transition">
+          <i data-lucide="rocket" class="w-6 h-6"></i>
+        </div>
+        <h4 class="text-xs font-bold text-white tracking-wide uppercase">Pronto para o Futuro</h4>
+        <p class="text-[11px] text-slate-400 mt-1 leading-snug">Certificação alinhada às demandas reais do mercado tech.</p>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- BOTTOM BANNER (EXACTLY AS IN PHOTO) -->
+  <footer class="w-full max-w-7xl glass-panel rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 border border-blue-500/20 shadow-lg no-print">
+    <div class="flex items-center gap-3 text-center sm:text-left">
+      <div class="p-2.5 rounded-xl bg-blue-600/20 border border-blue-500/30 text-blue-400">
+        <i data-lucide="globe" class="w-6 h-6"></i>
+      </div>
+      <div>
+        <h5 class="text-xs sm:text-sm font-bold text-white tracking-wide uppercase font-heading">
+          O Futuro da Educação é Transparente, Prático e Verificável.
+        </h5>
+        <p class="text-[11px] text-slate-400 mt-0.5">
+          Certificados que abrem portas por comprovarem o que realmente importa: suas habilidades.
+        </p>
+      </div>
+    </div>
+
+    <!-- Mini Bottom Icons -->
+    <div class="flex items-center gap-3 text-slate-400">
+      <div class="p-2 rounded-lg bg-slate-800/80 border border-slate-700/60 hover:text-blue-400 transition cursor-pointer" title="Código Aberto">
+        <i data-lucide="code-2" class="w-4 h-4"></i>
+      </div>
+      <div class="p-2 rounded-lg bg-slate-800/80 border border-slate-700/60 hover:text-blue-400 transition cursor-pointer" title="Nuvem & Deploy">
+        <i data-lucide="cloud" class="w-4 h-4"></i>
+      </div>
+      <div class="p-2 rounded-lg bg-slate-800/80 border border-slate-700/60 hover:text-blue-400 transition cursor-pointer" title="Conquistas">
+        <i data-lucide="trophy" class="w-4 h-4"></i>
+      </div>
+      <div class="p-2 rounded-lg bg-slate-800/80 border border-slate-700/60 hover:text-blue-400 transition cursor-pointer" title="Pronto para Emprego">
+        <i data-lucide="briefcase" class="w-4 h-4"></i>
+      </div>
+    </div>
+  </footer>
+
+  <!-- EDIT MODAL -->
+  <div id="editModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto no-print">
+    <div class="glass-panel bg-slate-900 border border-blue-500/40 w-full max-w-2xl rounded-2xl p-6 shadow-2xl my-8">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+          <i data-lucide="edit" class="w-5 h-5 text-blue-400"></i> Editar Certificado Selecionado
+        </h3>
+        <button onclick="closeModal()" class="text-slate-400 hover:text-white transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="editForm" onsubmit="saveCurrentCert(event)" class="mt-4 space-y-4 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-300 mb-1">Título do Certificado / Formação</label>
+          <input type="text" id="form-title" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white focus:border-blue-500 focus:outline-none" required>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-300 mb-1">Descrição do Curso</label>
+          <textarea id="form-desc" rows="2" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white focus:border-blue-500 focus:outline-none"></textarea>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Carga Horária</label>
+            <input type="text" id="form-hours" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white focus:border-blue-500 focus:outline-none" required>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Data de Conclusão</label>
+            <input type="text" id="form-date" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white focus:border-blue-500 focus:outline-none" required>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Proficiência (%)</label>
+            <input type="number" min="10" max="100" id="form-proficiency" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white focus:border-blue-500 focus:outline-none" required>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-300 mb-1">Competências / Tecnologias (separadas por vírgula)</label>
+          <input type="text" id="form-skills" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white focus:border-blue-500 focus:outline-none" placeholder="HTML5, CSS3, JavaScript, Git">
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-300 mb-1">Link de Validação Oficial (ou perfil do GitHub para o QR Code)</label>
+          <input type="url" id="form-verify-url" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white focus:border-blue-500 focus:outline-none" placeholder="https://www.dio.me/certificate/..." required>
+        </div>
+
+        <div class="pt-2 border-t border-slate-800 flex items-center justify-between">
+          <button type="button" onclick="deleteCurrentCert()" class="px-3.5 py-2 rounded-lg bg-red-600/30 hover:bg-red-600 text-red-200 text-xs font-semibold transition flex items-center gap-1.5">
+            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Excluir Este Certificado
+          </button>
+          <div class="flex gap-2">
+            <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold transition">Cancelar</button>
+            <button type="submit" class="px-5 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold shadow-lg shadow-blue-600/25 transition">Salvar Alterações</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- NEW CERTIFICATE MODAL -->
+  <div id="newCertModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto no-print">
+    <div class="glass-panel bg-slate-900 border border-emerald-500/40 w-full max-w-xl rounded-2xl p-6 shadow-2xl my-8">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+          <i data-lucide="plus-circle" class="w-5 h-5 text-emerald-400"></i> Adicionar Novo Certificado
+        </h3>
+        <button onclick="closeNewCertModal()" class="text-slate-400 hover:text-white transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="createNewCert(event)" class="mt-4 space-y-4 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-300 mb-1">Título do Certificado</label>
+          <input type="text" id="new-title" placeholder="Ex: Análise e Desenvolvimento de Sistemas" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white focus:border-emerald-500 focus:outline-none" required>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-300 mb-1">Instituição / Descrição Breve</label>
+          <input type="text" id="new-desc" placeholder="Ex: Formação com foco em arquitetura de software e infraestrutura." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white focus:border-emerald-500 focus:outline-none">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Carga Horária</label>
+            <input type="text" id="new-hours" placeholder="Ex: 120h" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white focus:border-emerald-500 focus:outline-none" required>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-300 mb-1">Data de Conclusão</label>
+            <input type="text" id="new-date" placeholder="Ex: Outubro/2026" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white focus:border-emerald-500 focus:outline-none" required>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-300 mb-1">Competências (separadas por vírgula)</label>
+          <input type="text" id="new-skills" placeholder="Docker, Python, SQL, Cloud" class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white focus:border-emerald-500 focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-300 mb-1">Link de Validação Oficial / Credencial</label>
+          <input type="url" id="new-url" placeholder="https://..." class="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-white focus:border-emerald-500 focus:outline-none" required>
+        </div>
+
+        <div class="pt-2 border-t border-slate-800 flex justify-end gap-2">
+          <button type="button" onclick="closeNewCertModal()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold transition">Cancelar</button>
+          <button type="submit" class="px-5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold transition">Criar Certificado</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- SCRIPT LOGIC -->
+  <script>
+    // Initial Pre-configured Certificates List
+    const defaultCertificates = [
+      {
+        id: "dio-ia",
+        title: "Fundamentos de Inteligência Artificial",
+        category: "FORMAÇÃO DIGITAL - DIO",
+        desc: "Capacitação avançada em modelos de aprendizado, redes neurais, engenharia de prompts e arquitetura de sistemas com IA generativa.",
+        hours: "64h",
+        date: "28/11/2025",
+        proficiency: 92,
+        skills: ["GenAI", "Prompt Eng.", "Python", "Computer Vision", "LLMs", "Redes Neurais"],
+        verificationUrl: "https://www.dio.me/certificate/KAFNN1C9",
+        projects: [
+          { name: "FinChat AI", desc: "Assistente conversacional para finanças pessoais", icon: "bot", url: "https://github.com/josecelsodelucas2-lgtm/FinChat-AI" },
+          { name: "Classificador de Imagens", desc: "Modelo treinado de reconhecimento visual", icon: "scan-eye", url: "https://github.com/josecelsodelucas2-lgtm" },
+          { name: "Automação com IA & n8n", desc: "Pipeline integrado de prompts e webhooks", icon: "workflow", url: "https://github.com/josecelsodelucas2-lgtm" }
+        ]
+      },
+      {
+        id: "cisco-ccna1",
+        title: "CiberEducação Cisco - CCNA1",
+        category: "CERTIFICAÇÃO OFICIAL - CISCO NETACAD",
+        desc: "Fundamentos e arquitetura de redes de computadores, roteamento IPv4/IPv6, protocolos ICMP, ARP, comutação Ethernet e segurança de borda.",
+        hours: "70h",
+        date: "13/06/2025",
+        proficiency: 88,
+        skills: ["IPv6 / IPv4", "Packet Tracer", "Subnetting", "VLANs", "Roteamento", "Cybersecurity"],
+        verificationUrl: "https://www.netacad.com/",
+        projects: [
+          { name: "Topologia IPv6 Inter-Subnet", desc: "Roteamento e análise de ICMPv6 no Packet Tracer", icon: "network", url: "https://github.com/josecelsodelucas2-lgtm" },
+          { name: "IT Infra Ops Hub", desc: "Painel de operações de monitoramento de ativos", icon: "server", url: "https://github.com/josecelsodelucas2-lgtm" },
+          { name: "SOC Detection Lab", desc: "Simulação de detecção e triagem de anomalias", icon: "shield-alert", url: "https://github.com/josecelsodelucas2-lgtm" }
+        ]
+      },
+      {
+        id: "dio-fullstack",
+        title: "Desenvolvimento Web Full Stack",
+        category: "CERTIFICADO DE CONCLUSÃO",
+        desc: "Formação completa com foco em desenvolvimento de aplicações web modernas, boas práticas e projetos do mundo real.",
+        hours: "80h",
+        date: "15/10/2026",
+        proficiency: 85,
+        skills: ["HTML5", "CSS3", "JavaScript ES6+", "TypeScript", "Node.js", "Express", "MongoDB", "Git & GitHub"],
+        verificationUrl: "https://github.com/josecelsodelucas2-lgtm",
+        projects: [
+          { name: "Task Manager", desc: "Aplicação completa de gestão de tarefas com local storage", icon: "check-square", url: "https://github.com/josecelsodelucas2-lgtm" },
+          { name: "API de Produtos RESTful", desc: "Servidor Node/Express com autenticação JWT e testes", icon: "database", url: "https://github.com/josecelsodelucas2-lgtm" },
+          { name: "Dashboard Comercial Interativo", desc: "Painel executivo com métricas em tempo real e gráficos", icon: "bar-chart-3", url: "https://github.com/josecelsodelucas2-lgtm" }
+        ]
+      },
+      {
+        id: "cisco-cyber",
+        title: "Sensibilização para a Segurança Digital",
+        category: "PROGRAMA CIBEREDUCAÇÃO - CISCO",
+        desc: "Boas práticas defensivas corporativas, prevenção a engenharia social, gestão de identidades e proteção de infraestrutura crítica.",
+        hours: "40h",
+        date: "29/09/2026",
+        proficiency: 90,
+        skills: ["Segurança Digital", "Prevenção a Phishing", "Criptografia", "Defesa Cibernética"],
+        verificationUrl: "https://www.netacad.com/",
+        projects: [
+          { name: "Manual de Higiene Cibernética", desc: "Diretrizes e checklists de proteção de terminais", icon: "file-text", url: "https://github.com/josecelsodelucas2-lgtm" },
+          { name: "Simulador de Coletor Zebra", desc: "Validação segura e rastreabilidade logística", icon: "barcode", url: "https://github.com/josecelsodelucas2-lgtm" }
+        ]
+      }
+    ];
+
+    // Local Storage State
+    let certificates = [];
+    let currentCertId = "";
+
+    function loadCertificates() {
+      const saved = localStorage.getItem("my_interactive_certificates");
+      if (saved) {
+        try {
+          certificates = JSON.parse(saved);
+        } catch (e) {
+          certificates = defaultCertificates;
+        }
+      } else {
+        certificates = defaultCertificates;
+        saveToStorage();
+      }
+      currentCertId = certificates[0] ? certificates[0].id : "";
+      renderSelectOptions();
+      renderCertificate(currentCertId);
+    }
+
+    function saveToStorage() {
+      localStorage.setItem("my_interactive_certificates", JSON.stringify(certificates));
+    }
+
+    function renderSelectOptions() {
+      const select = document.getElementById("certSelect");
+      select.innerHTML = "";
+      certificates.forEach(c => {
+        const opt = document.createElement("option");
+        opt.value = c.id;
+        opt.textContent = c.title;
+        if (c.id === currentCertId) opt.selected = true;
+        select.appendChild(opt);
+      });
+    }
+
+    function switchCertificate(id) {
+      currentCertId = id;
+      renderCertificate(id);
+    }
+
+    function getCurrentCert() {
+      return certificates.find(c => c.id === currentCertId) || certificates[0];
+    }
+
+    function renderCertificate(id) {
+      const cert = certificates.find(c => c.id === id);
+      if (!cert) return;
+
+      document.getElementById("disp-category").textContent = cert.category || "CERTIFICADO DE CONCLUSÃO";
+      document.getElementById("disp-title").textContent = cert.title;
+      document.getElementById("disp-desc").textContent = cert.desc;
+      document.getElementById("disp-hours").textContent = cert.hours;
+      document.getElementById("disp-date").textContent = cert.date;
+      document.getElementById("disp-percent").textContent = cert.proficiency + "%";
+
+      // Circular progress bar
+      const circle = document.getElementById("disp-circle");
+      circle.setAttribute("stroke-dasharray", `${cert.proficiency}, 100`);
+
+      // Skills pills
+      const skillsContainer = document.getElementById("disp-skills");
+      skillsContainer.innerHTML = "";
+      cert.skills.forEach(skill => {
+        const badge = document.createElement("span");
+        badge.className = "px-2.5 py-1 rounded-lg bg-blue-950/60 border border-blue-500/25 text-blue-300 text-[11px] font-semibold flex items-center gap-1 shadow-sm";
+        badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span> ${skill}`;
+        skillsContainer.appendChild(badge);
+      });
+
+      // Projects list
+      const projectsContainer = document.getElementById("disp-projects");
+      projectsContainer.innerHTML = "";
+      if (cert.projects && cert.projects.length > 0) {
+        cert.projects.forEach(p => {
+          const item = document.createElement("a");
+          item.href = p.url || "https://github.com/josecelsodelucas2-lgtm";
+          item.target = "_blank";
+          item.className = "p-2 rounded-xl bg-slate-800/40 border border-slate-800 hover:border-blue-500/40 hover:bg-slate-800/80 transition flex items-start gap-2.5 group cursor-pointer block";
+          item.innerHTML = `
+            <div class="p-1.5 rounded-lg bg-blue-600/10 text-blue-400 border border-blue-500/20 group-hover:scale-105 transition flex-shrink-0 mt-0.5">
+              <i data-lucide="${p.icon || 'folder'}" class="w-3.5 h-3.5"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center justify-between">
+                <h5 class="text-xs font-bold text-slate-200 group-hover:text-blue-300 transition truncate">${p.name}</h5>
+                <i data-lucide="external-link" class="w-3 h-3 text-slate-500 group-hover:text-blue-400 transition ml-1 flex-shrink-0"></i>
+              </div>
+              <p class="text-[10px] text-slate-400 leading-tight mt-0.5 truncate">${p.desc}</p>
+            </div>
+          `;
+          projectsContainer.appendChild(item);
+        });
+      }
+
+      // Evidence Grid
+      const evidenceContainer = document.getElementById("disp-evidence");
+      evidenceContainer.innerHTML = `
+        <a href="https://github.com/josecelsodelucas2-lgtm" target="_blank" class="p-2 rounded-xl bg-slate-800/50 border border-slate-700/60 hover:border-blue-500/40 hover:bg-slate-800 transition flex items-center gap-2 group">
+          <i data-lucide="github" class="w-4 h-4 text-slate-400 group-hover:text-white transition"></i>
+          <div class="text-left">
+            <span class="block text-[10px] font-bold text-slate-200">GitHub</span>
+            <span class="block text-[8px] text-slate-400">Repositórios</span>
+          </div>
+        </a>
+        <a href="${cert.verificationUrl}" target="_blank" class="p-2 rounded-xl bg-slate-800/50 border border-slate-700/60 hover:border-blue-500/40 hover:bg-slate-800 transition flex items-center gap-2 group">
+          <i data-lucide="code" class="w-4 h-4 text-cyan-400 group-hover:text-cyan-300 transition"></i>
+          <div class="text-left">
+            <span class="block text-[10px] font-bold text-slate-200">Desafios</span>
+            <span class="block text-[8px] text-slate-400">Testes Práticos</span>
+          </div>
+        </a>
+        <a href="${cert.verificationUrl}" target="_blank" class="p-2 rounded-xl bg-slate-800/50 border border-slate-700/60 hover:border-blue-500/40 hover:bg-slate-800 transition flex items-center gap-2 group">
+          <i data-lucide="award" class="w-4 h-4 text-amber-400 group-hover:text-amber-300 transition"></i>
+          <div class="text-left">
+            <span class="block text-[10px] font-bold text-slate-200">Avaliações</span>
+            <span class="block text-[8px] text-slate-400">Aprovado</span>
+          </div>
+        </a>
+        <a href="${cert.verificationUrl}" target="_blank" class="p-2 rounded-xl bg-blue-900/30 border border-blue-500/30 hover:border-blue-400 hover:bg-blue-900/50 transition flex items-center gap-2 group">
+          <i data-lucide="check-circle-2" class="w-4 h-4 text-blue-400 group-hover:text-cyan-300 transition"></i>
+          <div class="text-left">
+            <span class="block text-[10px] font-bold text-white">Validar Online</span>
+            <span class="block text-[8px] text-blue-300">Autenticidade</span>
+          </div>
+        </a>
+      `;
+
+      // Update QR Code
+      updateQRCode(cert.verificationUrl);
+
+      // Re-trigger Lucide Icons
+      if (window.lucide) {
+        lucide.createIcons();
+      }
+    }
+
+    function updateQRCode(url) {
+      const container = document.getElementById("qrcode");
+      container.innerHTML = "";
+      new QRCode(container, {
+        text: url || "https://github.com/josecelsodelucas2-lgtm",
+        width: 78,
+        height: 78,
+        colorDark: "#0f172a",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.M
+      });
+    }
+
+    function verifyCertificate() {
+      const cert = getCurrentCert();
+      window.open(cert.verificationUrl, '_blank');
+    }
+
+    // Modal Operations
+    function openModal() {
+      const cert = getCurrentCert();
+      if (!cert) return;
+      document.getElementById("form-title").value = cert.title;
+      document.getElementById("form-desc").value = cert.desc;
+      document.getElementById("form-hours").value = cert.hours;
+      document.getElementById("form-date").value = cert.date;
+      document.getElementById("form-proficiency").value = cert.proficiency;
+      document.getElementById("form-skills").value = cert.skills.join(", ");
+      document.getElementById("form-verify-url").value = cert.verificationUrl;
+      document.getElementById("editModal").classList.remove("hidden");
+    }
+
+    function closeModal() {
+      document.getElementById("editModal").classList.add("hidden");
+    }
+
+    function saveCurrentCert(e) {
+      e.preventDefault();
+      const cert = getCurrentCert();
+      if (!cert) return;
+
+      cert.title = document.getElementById("form-title").value;
+      cert.desc = document.getElementById("form-desc").value;
+      cert.hours = document.getElementById("form-hours").value;
+      cert.date = document.getElementById("form-date").value;
+      cert.proficiency = parseInt(document.getElementById("form-proficiency").value) || 85;
+      cert.skills = document.getElementById("form-skills").value.split(",").map(s => s.trim()).filter(s => s.length > 0);
+      cert.verificationUrl = document.getElementById("form-verify-url").value;
+
+      saveToStorage();
+      renderSelectOptions();
+      renderCertificate(cert.id);
+      closeModal();
+    }
+
+    function deleteCurrentCert() {
+      if (certificates.length <= 1) {
+        alert("Você precisa manter pelo menos um certificado na sua lista.");
+        return;
+      }
+      if (confirm("Tem certeza que deseja excluir este certificado da sua lista?")) {
+        certificates = certificates.filter(c => c.id !== currentCertId);
+        currentCertId = certificates[0].id;
+        saveToStorage();
+        renderSelectOptions();
+        renderCertificate(currentCertId);
+        closeModal();
+      }
+    }
+
+    // New Certificate Modal Operations
+    function openNewCertModal() {
+      document.getElementById("newCertModal").classList.remove("hidden");
+    }
+
+    function closeNewCertModal() {
+      document.getElementById("newCertModal").classList.add("hidden");
+    }
+
+    function createNewCert(e) {
+      e.preventDefault();
+      const title = document.getElementById("new-title").value;
+      const desc = document.getElementById("new-desc").value || "Certificado de capacitação e desenvolvimento técnico.";
+      const hours = document.getElementById("new-hours").value;
+      const date = document.getElementById("new-date").value;
+      const skillsStr = document.getElementById("new-skills").value || "Desenvolvimento, Tecnologia";
+      const url = document.getElementById("new-url").value;
+
+      const newId = "cert-" + Date.now();
+      const newCert = {
+        id: newId,
+        title: title,
+        category: "CERTIFICADO DE CONCLUSÃO",
+        desc: desc,
+        hours: hours,
+        date: date,
+        proficiency: 90,
+        skills: skillsStr.split(",").map(s => s.trim()).filter(s => s.length > 0),
+        verificationUrl: url,
+        projects: [
+          { name: "Projeto de Avaliação", desc: "Aplicação prática entregue durante a capacitação", icon: "code", url: "https://github.com/josecelsodelucas2-lgtm" }
+        ]
+      };
+
+      certificates.push(newCert);
+      currentCertId = newId;
+      saveToStorage();
+      renderSelectOptions();
+      renderCertificate(newId);
+      closeNewCertModal();
+    }
+
+    // Initialize on load
+    window.addEventListener("DOMContentLoaded", () => {
+      loadCertificates();
+    });
+  </script>
+</body>
+</html>
