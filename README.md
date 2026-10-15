@@ -14,19 +14,12 @@
     <a href="#-como-executar"><b>💻 Como Executar</b></a>
   </p>
 
-  <!-- BADGES DE Destaque -->
+  <!-- BADGES DE DESTAQUE -->
   <p>
     <img src="https://img.shields.io/badge/Status-Conclu%C3%ADdo-brightgreen?style=for-the-badge" alt="Status">
-    <img src="https://img.shields.io/badge/Deploy-Vercel%20%2F%20Netlify-blue?style=for-the-badge&logo=vercel" alt="Deploy">
+    <img src="https://img.shields.io/badge/Deploy-GitHub%20Pages-blue?style=for-the-badge&logo=github" alt="Deploy">
     <img src="https://img.shields.io/badge/Licen%C3%A7a-MIT-yellow?style=for-the-badge" alt="Licença">
   </p>
-
-  <br>
-
-  <!-- PREVIEW DO PROJETO -->
-  <a href="https://SEU_LINK_DEMO.vercel.app">
-    <img src="https://via.placeholder.com/900x450.png?text=Preview+do+Certificado+Interativo" alt="Preview da Aplicação" width="100%">
-  </a>
 
 </div>
 
@@ -46,7 +39,7 @@ Certificados estáticos em PDF não comprovam habilidade prática. Este projeto 
 
 Acesse o projeto publicado e teste as funcionalidades interativas no seu navegador:
 
-🔗 **[Clique aqui para acessar a aplicação ao vivo](https://SEU_LINK_DEMO.vercel.app)**  
+🔗 **[Clique aqui para acessar a aplicação ao vivo](https://josecelsodelucas2-lgtm.github.io/interactive-certificate/)**  
 
 ---
 
@@ -70,7 +63,7 @@ Projetado com foco em **performance, semântica e acessibilidade**:
 | **Front-end** | `HTML5 Semântico`, `CSS3 Moderno (Flexbox/Grid)`, `JavaScript (ES6+)` |
 | **Recursos Visuais** | `SVG Interativo`, `@media print` para exportação em PDF |
 | **Integrações** | API Externa para QR Code dinâmico, `LocalStorage API` |
-| **Deploy & Versão** | `Git`, `GitHub Pages / Vercel` |
+| **Deploy & Versão** | `Git`, `GitHub Pages` |
 
 ---
 
@@ -86,10 +79,10 @@ Não é necessário instalar gerenciadores de pacotes pesados. O projeto roda na
 
 ```bash
 # 1. Clone o repositório
-git clone [https://github.com/SEU-USUARIO/portfolio-certificado.git](https://github.com/SEU-USUARIO/portfolio-certificado.git)
+git clone [https://github.com/josecelsodelucas2-lgtm/interactive-certificate.git](https://github.com/josecelsodelucas2-lgtm/interactive-certificate.git)
 
 # 2. Entre na pasta do projeto
-cd portfolio-certificado
+cd interactive-certificate
 
 # 3. Abra o arquivo index.html no navegador
 # No Linux/Mac:
